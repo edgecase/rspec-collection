@@ -18,6 +18,8 @@ else
     s.version = Project.version
     s.summary = "Allow RSpec assertions over the elements of a collection."
     s.description = <<-EOF
+      Allow RSpec assertions over the elements of a collection.
+
       For example:
 
         collection.should all_be > 0
