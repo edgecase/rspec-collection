@@ -1,6 +1,8 @@
 #!/usr/bin/ruby -wKU
 
-$package_version = "2.0.0"
+require './lib/rspec-collection/version'
+
+$package_version = RSpecCollection::VERSION
 
 task :default => :spec
 

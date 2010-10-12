@@ -46,7 +46,7 @@ else
     s.author = "Jim Weirich"
     s.email = "jim@edgecase.com"
     s.homepage = "http://github.com/jimweirich/rspec-collection"
-    s.rubyforge_project = nil
+    s.rubyforge_project = ""
   end
 
   Rake::GemPackageTask.new(SPEC) do |pkg|
