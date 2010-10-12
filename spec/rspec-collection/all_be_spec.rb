@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'rspec-collection/all_be'
 
 class Integer
-  def divisable_by?(n)
+  def divisible_by?(n)
     (self % n) == 0
   end
 end
@@ -85,22 +85,22 @@ describe "Collection Matchers" do
 
   context "using predicates with arguments" do
     it "passing predicate" do
-      [3,6,9].should all_be_divisable_by(3)
+      [3,6,9].should all_be_divisible_by(3)
     end
 
     it "passing NOT predicate" do
-      [3,6,8].should_not all_be_divisable_by(3)
+      [3,6,8].should_not all_be_divisible_by(3)
     end
 
     it "failing predicate" do
       should_fail([3,6,8]) { |obj|
-        obj.should all_be_divisable_by(3)
+        obj.should all_be_divisible_by(3)
       }
     end
 
     it "failing NOT predicate" do
       should_fail([3,6,9]) { |obj|
-        obj.should_not all_be_divisable_by(3)
+        obj.should_not all_be_divisible_by(3)
       }
     end
   end
@@ -154,12 +154,34 @@ describe "Error Messages" do
   end
 
   context "when NOT matchers fail" do
-    it "contains simple error" do
+    it "contains single failure message" do
       lambda {
         [1,1,1].should_not all_be eq(1)
       }.should raise_error(
         RSpec::Expectations::ExpectationNotMetError,
         /expected \[1, 1, 1\] to not all pass/m)
+    end
+  end
+
+  # block ------------------------------------------------------------
+
+  context "when blocks fail" do
+    it "contains multiple items" do
+      lambda {
+        [1,2,3].should all_be { |n| n == 1 }
+      }.should raise_error(
+        RSpec::Expectations::ExpectationNotMetError,
+        /expected 2 to satisfy the block.*expected 3 to satisfy the block/m)
+    end
+  end
+
+  context "when NOT matchers fail" do
+    it "contains single failure message" do
+      lambda {
+        [1,1,1].should_not all_be { |n| n == 1 }
+      }.should raise_error(
+        RSpec::Expectations::ExpectationNotMetError,
+        /expected \[1, 1, 1\] to not all satisfy the block/m)
     end
   end
 
@@ -176,12 +198,56 @@ describe "Error Messages" do
   end
 
   context "when NOT predicates fail" do
-    it "contains multiple items" do
+    it "contains single failure message" do
       lambda {
         [0,0].should_not all_be_zero
       }.should raise_error(
         RSpec::Expectations::ExpectationNotMetError,
         /expected \[0, 0\] to not all be zero/m)
+    end
+  end
+
+  # predicate with args ----------------------------------------------
+
+  context "when predicates fail" do
+    it "contains multiple items" do
+      lambda {
+        [3,4,5].should all_be_divisible_by(3)
+      }.should raise_error(
+        RSpec::Expectations::ExpectationNotMetError,
+        /expected 4 to be divisible by 3.*expected 5 to be divisible by 3/m)
+    end
+  end
+
+  context "when NOT predicates fail" do
+    it "contains single failure message" do
+      lambda {
+        [3,6,9].should_not all_be_divisible_by(3)
+      }.should raise_error(
+        RSpec::Expectations::ExpectationNotMetError,
+        /expected \[3, 6, 9\] to not all be divisible by 3/m)
+    end
+  end
+
+  # operators --------------------------------------------------------
+
+  context "when operators fail" do
+    it "contains multiple items" do
+      lambda {
+        [1,2,3].should all_be == 1
+      }.should raise_error(
+        RSpec::Expectations::ExpectationNotMetError,
+        /expected 2 to be == 1.*expected 3 to be == 1/m)
+    end
+  end
+
+  context "when NOT predicates fail" do
+    it "contains single failure message" do
+      lambda {
+        [1,1,1].should_not all_be == 1
+      }.should raise_error(
+        RSpec::Expectations::ExpectationNotMetError,
+        /expected \[1, 1, 1\] to not all be == 1/m)
     end
   end
 

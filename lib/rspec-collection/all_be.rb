@@ -1,4 +1,4 @@
-# WARNING: Unrefactored Proof of Concept
+# WARNING: Proof of Concept
 #
 # Allows:
 #   [1,1,1].should all_be eq(1)
@@ -11,6 +11,13 @@ module RSpec
   module Matchers
     module AllBe
       module_function
+
+      def format_predicate(pred, *args)
+        message_elements =
+          ["be #{pred.gsub(/_/, ' ')}"] +
+          args.map { |a| a.inspect }
+        message_elements.join(' ')
+      end
 
       def make_matcher(msg, &block)
         Matcher.new :all_be, block do |_block_|
@@ -40,7 +47,7 @@ module RSpec
           end
 
           description do
-            "be all"
+            "all be"
           end
         end
       end
@@ -56,12 +63,17 @@ module RSpec
       end
     end
 
-    alias method_missing_without_be_all method_missing
+    alias method_missing_without_all_be method_missing
     def method_missing(sym, *args, &block)
       if sym.to_s =~ /^all_be_(\w+)$/
-        _all_be_with_predicate($1, *args, &block)
+        pred = $1
+        pred_method = "#{pred}?"
+        msg = AllBe.format_predicate(pred, *args)
+        AllBe.make_matcher(msg) { |item|
+          item.send(pred_method, *args, &block)
+        }
       else
-        method_missing_without_be_all(sym, *args, &block)
+        method_missing_without_all_be(sym, *args, &block)
       end
     end
 
@@ -76,46 +88,10 @@ module RSpec
           end
         }
       elsif block_given?
-        AllBe.make_matcher("satisfy block", &block)
+        AllBe.make_matcher("satisfy the block", &block)
       else
         AllBeOperatorMatcher.new
       end
-    end
-
-    def _all_be_with_predicate(pred, *args, &block)
-      pred_method = "#{pred}?"
-      AllBe.make_matcher("be #{pred}") { |item|
-        item.send(pred_method, *args, &block)
-      }
-    end
-
-    def _all_be_with_matcher(matcher)
-      # Matcher.new :all_be, matcher do |_matcher_|
-      #   result = true
-      #   match do |actual|
-      #     actual.each do |item|
-      #       unless _matcher_.matches?(item)
-      #         result = false
-      #         break
-      #       end
-      #     end
-      #     result
-      #   end
-
-      #   failure_message_for_should do |actual|
-      #     "in #{actual.inspect}:\n" +
-      #       _matcher_.failure_message_for_should
-      #   end
-
-      #   failure_message_for_should_not do |actual|
-      #     "in #{actual.inspect}:\n" +
-      #       _matcher_.failure_message_for_should_not
-      #   end
-
-      #   description do
-      #     "be all #{_matcher_.description}"
-      #   end
-      # end
     end
   end
 end
