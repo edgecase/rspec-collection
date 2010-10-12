@@ -12,21 +12,21 @@ describe "Collection Matchers" do
   # matcher ----------------------------------------------------------
 
   context "using matchers" do
-    it "passing matcher" do
+    it "matcher passes" do
       [1,1,1].should all_be eq(1)
     end
 
-    it "passing NOT matcher" do
+    it "NOT matcher passes" do
       [1,2,1].should_not all_be eq(1)
     end
 
-    it "failing matcher" do
+    it "matcher fails correctly" do
       should_fail([1,2,3]) { |obj|
         obj.should all_be eq(1)
       }
     end
 
-    it "failing NOT matcher" do
+    it "NOT matcher fails correctly" do
       should_fail([1,1,1]) { |obj|
         obj.should_not all_be eq(1)
       }
@@ -36,21 +36,21 @@ describe "Collection Matchers" do
   # block ------------------------------------------------------------
 
   context "using blocks" do
-    it "passing block" do
+    it "block passes" do
       [0,2,4].should all_be { |item| item.even? }
     end
 
-    it "passing NOT block" do
+    it "NOT block passes" do
       [0,2,5].should_not all_be { |item| item.even? }
     end
 
-    it "failing NOT block" do
+    it "NOT block fails correctly" do
       should_fail([0,2,4]) { |obj|
         obj.should_not all_be { |item| item.even? }
       }
     end
 
-    it "failing NOT block" do
+    it "NOT block fails correctly" do
       should_fail([0,2,4]) { |obj|
         obj.should_not all_be { |item| item.even? }
       }
@@ -60,21 +60,21 @@ describe "Collection Matchers" do
   # predicates -------------------------------------------------------
 
   context "using predicates" do
-    it "passing predicate" do
+    it "predicate passes" do
       [0,2,4].should all_be_even
     end
 
-    it "passing NOT predicate" do
+    it "NOT predicate passes" do
       [0,2,5].should_not all_be_even
     end
 
-    it "failing predicate" do
+    it "predicate fails correctly" do
       should_fail([0,2,5]) { |obj|
         obj.should all_be_even
       }
     end
 
-    it "failing NOT predicate" do
+    it "NOT predicate fails correctly" do
       should_fail([0,2,4]) { |obj|
         obj.should_not all_be_even
       }
@@ -84,21 +84,21 @@ describe "Collection Matchers" do
   # predicates with args ---------------------------------------------
 
   context "using predicates with arguments" do
-    it "passing predicate" do
+    it "predicate passes" do
       [3,6,9].should all_be_divisible_by(3)
     end
 
-    it "passing NOT predicate" do
+    it "NOT predicate passes" do
       [3,6,8].should_not all_be_divisible_by(3)
     end
 
-    it "failing predicate" do
+    it "predicate fails correctly" do
       should_fail([3,6,8]) { |obj|
         obj.should all_be_divisible_by(3)
       }
     end
 
-    it "failing NOT predicate" do
+    it "NOT predicate fails correctly" do
       should_fail([3,6,9]) { |obj|
         obj.should_not all_be_divisible_by(3)
       }
@@ -108,23 +108,43 @@ describe "Collection Matchers" do
   # operator ---------------------------------------------------------
 
   context "using operators" do
-    it "passing operator" do
+    it "operator passes" do
       [1,1,1].should all_be == 1
     end
 
-    it "passing NOT operator" do
+    it "NOT operator passes" do
       [1,1,2].should_not all_be == 1
     end
 
-    it "failing operator" do
+    it "operator fails correctly" do
       should_fail([1,2,3]) { |obj|
         obj.should all_be < 3
       }
     end
 
-    it "failing NOT operator" do
+    it "NOT operator fails correctly" do
       should_fail([1,2,1]) { |obj|
         obj.should_not all_be < 3
+      }
+    end
+
+    it "=~ operator passes" do
+      ["a", "b", "c"].should all_be =~ /^.$/
+    end
+
+    it "NOT =~ operator passes" do
+      ["a", "b", "c"].should_not all_be =~ /^..$/
+    end
+
+    it "=~ operator fails correctly" do
+      should_fail(["a", "b", "cc"]) { |obj|
+        obj.should all_be =~ /^.$/
+      }
+    end
+
+    it "NOT =~ operator fails correctly" do
+      should_fail(["a", "b", "c"]) { |obj|
+        obj.should_not all_be =~ /^.$/
       }
     end
   end
@@ -137,7 +157,6 @@ describe "Collection Matchers" do
     }.should raise_error(RSpec::Expectations::ExpectationNotMetError)
   end
 end
-
 
 describe "Error Messages" do
 
@@ -250,7 +269,4 @@ describe "Error Messages" do
         /expected \[1, 1, 1\] to not all be == 1/m)
     end
   end
-
-
-
 end

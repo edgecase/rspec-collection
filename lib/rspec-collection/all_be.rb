@@ -78,7 +78,7 @@ module RSpec
 
     # Handle mapping operators to appropriate collection mappers.
     class AllBeOperatorMatcher
-      [:==, :!=, :>, :<, :<=, :>=].each do |op|
+      [:==, :!=, :>, :<, :<=, :>=, :=~].each do |op|
         define_method(op) do |value|
           AllBe.make_matcher("be #{op} #{value}") { |element|
             element.send(op, value)
