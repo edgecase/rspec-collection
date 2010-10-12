@@ -144,13 +144,23 @@ describe "Error Messages" do
   # matcher ----------------------------------------------------------
 
   context "when matchers fail" do
-    # it "contains multiple items" do
-    #   lambda {
-    #     [1,2,3].should all_be eq(1)
-    #   }.should raise_error(
-    #     RSpec::Expectations::ExpectationNotMetError,
-    #     /xxx/m)
-    # end
+    it "contains multiple items" do
+      lambda {
+        [1,2,3].should all_be eq(1)
+      }.should raise_error(
+        RSpec::Expectations::ExpectationNotMetError,
+        /expected 1.*got 2.*expected 1.*got 3/m)
+    end
+  end
+
+  context "when NOT matchers fail" do
+    it "contains simple error" do
+      lambda {
+        [1,1,1].should_not all_be eq(1)
+      }.should raise_error(
+        RSpec::Expectations::ExpectationNotMetError,
+        /expected \[1, 1, 1\] to not all pass/m)
+    end
   end
 
   # predicate --------------------------------------------------------

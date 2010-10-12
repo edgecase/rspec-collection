@@ -14,10 +14,11 @@ module RSpec
 
       def make_matcher(msg, &block)
         Matcher.new :all_be, block do |_block_|
+          @failing_messages = []
           @broken = []
           match do |actual|
             actual.each do |item|
-              unless _block_.call(item)
+              unless _block_.call(item, @failing_messages)
                 @broken << item
               end
             end
@@ -25,8 +26,12 @@ module RSpec
           end
 
           failure_message_for_should do |actual|
-            messages = ["in #{actual.inspect}:"] +
-              @broken.map { |item| "expected #{item.inspect} to #{msg}" }
+            if @failing_messages.empty?
+              messages = ["in #{actual.inspect}:"] +
+                @broken.map { |item| "expected #{item.inspect} to #{msg}" }
+            else
+              messages = ["in #{actual.inspect}:"] + @failing_messages
+            end
             messages.join("\n")
           end
 
@@ -44,14 +49,10 @@ module RSpec
     class AllBeOperatorMatcher
       [:==, :!=, :>, :<, :<=, :>=].each do |op|
         define_method(op) do |value|
-          make_op_matcher(op, value)
+          AllBe.make_matcher("be #{op} #{value}") { |item|
+            item.send(op, value)
+          }
         end
-      end
-
-      def make_op_matcher(op, value)
-        AllBe.make_matcher("be #{op} #{value}") { |item|
-          item.send(op, value)
-        }
       end
     end
 
@@ -66,8 +67,13 @@ module RSpec
 
     def all_be(matcher=nil, &block)
       if matcher
-        AllBe.make_matcher("XXX") { |item|
-          matcher.matches?(item)
+        AllBe.make_matcher("pass") { |item, messages|
+          if matcher.matches?(item)
+            true
+          else
+            messages << matcher.failure_message_for_should
+            false
+          end
         }
       elsif block_given?
         AllBe.make_matcher("satisfy block", &block)
@@ -78,7 +84,9 @@ module RSpec
 
     def _all_be_with_predicate(pred, *args, &block)
       pred_method = "#{pred}?"
-      AllBe.make_matcher("be #{pred}") { |item| item.send(pred_method, *args, &block) }
+      AllBe.make_matcher("be #{pred}") { |item|
+        item.send(pred_method, *args, &block)
+      }
     end
 
     def _all_be_with_matcher(matcher)
