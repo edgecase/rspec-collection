@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'rspec-collection/all_be'
+require 'rspec-collection'
 
 class Integer
   def divisible_by?(n)
