@@ -14,6 +14,8 @@ be reported in the error message.
 
 Examples:
 
+    require 'rspec-collection'
+
     [1,1,1].should all_be eq(1)
     [2,4,6].should all_be_even
     [3,6,9].should all_be_divisible_by(3)
@@ -25,13 +27,6 @@ Examples:
 ### Requirements
 
 * RSpec 2.0.0
-
-## Todo
-
-* Other means of navigation besides left/right keys
-* Vertical view of all slides in a row
-* Generate PDFs (maybe via cucumber)
-* Stop making Nokogiri sad when parsing out snippets
 
 ## Contributors
 
