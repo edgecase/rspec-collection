@@ -14,8 +14,8 @@ else
 
     #### Basic information.
 
-    s.name = 'rspec-collection'
-    s.version = $package_version
+    s.name = Project.name
+    s.version = Project.version
     s.summary = "Allow RSpec assertions over the elements of a collection."
     s.description = <<-EOF
       For example:
@@ -43,10 +43,10 @@ else
 
     #### Author and project details.
 
-    s.author = "Jim Weirich"
-    s.email = "jim@edgecase.com"
-    s.homepage = "http://github.com/jimweirich/rspec-collection"
-    s.rubyforge_project = ""
+    s.author = Project.author
+    s.email = Project.author_email
+    s.homepage = Project.home_page
+    s.rubyforge_project = "n/a"
   end
 
   Rake::GemPackageTask.new(SPEC) do |pkg|
@@ -54,11 +54,11 @@ else
     pkg.need_tar = false
   end
 
-  file "rspec-collection.gemspec" => ["Rakefile", "rakelib/gem.rake"] do |t|
+  file "#{Project.name}.gemspec" => ["Rakefile", "rakelib/gem.rake"] do |t|
     require 'yaml'
     open(t.name, "w") { |f| f.puts SPEC.to_yaml }
   end
 
   desc "Create a stand-alone gemspec"
-  task :gemspec => "rspec-collection.gemspec"
+  task :gemspec => "#{Project.name}.gemspec"
 end
