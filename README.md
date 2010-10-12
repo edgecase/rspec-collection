@@ -6,7 +6,7 @@ Allow RSpec assertions over the elements of a collection.
 
 Allow RSpec assertions over the elements of a collection.  For example:
 
-    collection.should all\_be > 0
+    collection.should all_be > 0
 
 will specify that each element of the collection should be greater
 than zero.  Each element of the collection that fails the test will
@@ -14,11 +14,11 @@ be reported in the error message.
 
 Examples:
 
-    [1,1,1].should all\_be eq(1)
-    [2,4,6].should all\_be\_even
-    [3,6,9].should all\_be\_divisible_by(3)
-    [1,1,1].should all\_be == 1
-    [2,3,5].should all\_be { |n| prime?(n) }
+    [1,1,1].should all_be eq(1)
+    [2,4,6].should all_be_even
+    [3,6,9].should all_be_divisible_by(3)
+    [1,1,1].should all_be == 1
+    [2,3,5].should all_be { |n| prime?(n) }
 
 (for appropriate definitions of prime? and divisible_by?)
 
